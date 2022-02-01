@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6067752311581323017}
   - component: {fileID: 2448773943864877411}
   - component: {fileID: 8562985096289069016}
+  - component: {fileID: 3746977515626417232}
   m_Layer: 0
   m_Name: Orbit
   m_TagString: Untagged
@@ -140,5 +141,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa90cc764e7727e43826d53e486b110e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3746977515626417232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731804017392368210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb166b6282f54d94ab3525e5fe0554f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
