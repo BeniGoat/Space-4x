@@ -55,18 +55,5 @@ namespace Space4x.Models
 
                         this.systemSettings = systemSettings;
                 }
-
-                /// <summary>
-                /// Progresses time within the <see cref="SolarSystem"/> for a turn.
-                /// </summary>
-                public void ProgressTime()
-                {
-                        this.StopAllCoroutines();
-
-                        foreach (Orbit orbit in this.mapOrbits)
-                        {
-                                this.StartCoroutine(orbit.TravelOrbit());
-                        }
-                }
         }
 }

@@ -17,10 +17,14 @@ namespace Space4x.Models
 
                 private void Awake()
                 {
-                        this.CreateOrbitLine();
+                        this.ConfigureOrbitLine();
                         this.spots = new List<GameObject>();
                 }
 
+                /// <summary>
+                /// Moves the orbital body along the orbit line.
+                /// </summary>
+                /// <returns></returns>
                 public IEnumerator TravelOrbit()
                 {
                         int nextIndex = (this.orbitPositionIndex + 1) % this.coordinates.Length;
@@ -36,10 +40,9 @@ namespace Space4x.Models
                 /// <param name="orbitCoordinates">The coordinates of the orbit.</param>
                 public void Initialise(int orbitalIndex, float orbitalSeperationDistance, int numCoordinates, SystemBody body)
                 {
-                        this.orbitalDistance = orbitalIndex * orbitalSeperationDistance;
-                        this.coordinates = this.GetOrbitCoordinates(numCoordinates);
-                        this.SetOrbitLine(orbitalIndex);
+                        this.DrawOrbitLine(orbitalIndex);
 
+                        this.coordinates = this.GetOrbitCoordinates(numCoordinates);
                         foreach (Coordinate coordinate in this.coordinates)
                         {
                                 GameObject spot = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -57,6 +60,7 @@ namespace Space4x.Models
                                 body.transform.parent = this.transform;
                         }
 
+                        this.orbitalDistance = orbitalIndex * orbitalSeperationDistance;
                         this.body = body;
                 }
 
@@ -87,7 +91,7 @@ namespace Space4x.Models
                         return orbitCoordinates;
                 }
 
-                private void SetOrbitLine(int orbitDistanceIndex)
+                private void DrawOrbitLine(int orbitDistanceIndex)
                 {
                         this.line.positionCount = orbitDistanceIndex * 360 + 1;
                         float degreeBetweenCoordinates = 1f / orbitDistanceIndex;
@@ -102,7 +106,7 @@ namespace Space4x.Models
                         }
                 }
 
-                private void CreateOrbitLine()
+                private void ConfigureOrbitLine()
                 {
                         this.line = this.GetComponent<LineRenderer>();
                         this.line.useWorldSpace = true;

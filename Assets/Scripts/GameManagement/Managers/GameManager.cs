@@ -53,6 +53,7 @@ namespace Space4x.GameManagement.Managers
 
                 public CameraController CameraController = default;
                 public InputManager InputManager = default;
+                public SelectionManager selectionManager = default;
                 public GameObject SystemPrefab;
                 public GameObject OrbitPrefab;
                 public GameObject SunPrefab;
