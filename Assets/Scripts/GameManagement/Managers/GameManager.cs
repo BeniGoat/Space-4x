@@ -35,10 +35,12 @@ namespace Space4x.GameManagement.Managers
                         }
                 }
 
-                [SerializeField] private int systemSize = 2;
-                [SerializeField] private float orbitDistance = 10f;
+                [SerializeField] private int systemSize = 25;
+                [SerializeField] private float orbitDistance = 25f;
                 [SerializeField] private int orbitPointsCount = 6;
                 [SerializeField] private float planetSpawnRate = 1f;
+                [SerializeField] private float maxPlanetSize = 10f;
+                [SerializeField] private float minPlanetSize = 2f;
 
                 [SerializeField] private float rotationSpeed = 180f;
                 [SerializeField] private float moveSpeedMinZoom = 400f;
@@ -58,7 +60,10 @@ namespace Space4x.GameManagement.Managers
                 public GameObject OrbitPrefab;
                 public GameObject SunPrefab;
                 public GameObject PlanetPrefab;
+                public GameObject MapGridPrefab;
+                public GameObject MapLinePrefab;
 
+                public SystemSettings SystemSettings { get; set; }
                 public GameState State { get; set; }
 
                 private void Awake()
@@ -79,21 +84,22 @@ namespace Space4x.GameManagement.Managers
                 private void StartNewGame()
                 {
                         this.systemFactory = new PrefabFactory<SolarSystem>(this.SystemPrefab);
-                        var systemSettings = new SystemSettings
+                        this.SystemSettings = new SystemSettings
                         {
                                 OrbitalSeperationDistance = this.orbitDistance,
                                 OrbitPointsCount = this.orbitPointsCount,
                                 PlanetSpawnRate = this.planetSpawnRate,
+                                MaxPlanetSize = this.maxPlanetSize,
+                                MinPlanetSize = this.minPlanetSize,
                                 SystemSize = this.systemSize
                         };
                         SolarSystem startingSystem = this.systemFactory.Create();
-                        startingSystem.Initialise(systemSettings);
-                        startingSystem.IsSelected = true;
+                        startingSystem.Initialise();
                         this.systems.Add(startingSystem);
 
                         var cameraSettings = new CameraSettings
                         {
-                                Limit = startingSystem.Radius,
+                                Limit =  this.SystemSettings.SystemSize * this.SystemSettings.OrbitalSeperationDistance,
                                 RotationSpeed = this.rotationSpeed,
                                 MoveSpeedMaxZoom = this.moveSpeedMaxZoom,
                                 MoveSpeedMinZoom = this.moveSpeedMinZoom,

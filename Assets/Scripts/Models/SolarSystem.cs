@@ -1,6 +1,5 @@
 ﻿using Space4x.GameManagement.Managers;
 using Space4x.Models.Factories;
-using Space4x.Settings;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,25 +7,24 @@ namespace Space4x.Models
 {
         public class SolarSystem : MonoBehaviour
         {
-                private Transform Transform;
+                private Transform systemTransform;
                 private IFactory<Orbit> orbitFactory;
                 private IFactory<Sun> sunFactory;
-                private IFactory<Planet> planetFactory;
-                private List<Orbit> mapOrbits;
-                private SystemSettings systemSettings;
+                private IFactory<MapGrid> mapGridFactory;
+                private List<Orbit> orbits;
+                private MapGrid mapGrid;
                 private Sun sun;
 
                 public bool IsSelected { get; set; }
-                public float Radius => this.systemSettings.SystemSize * this.systemSettings.OrbitalSeperationDistance;
 
                 private void Awake()
                 {
-                        this.Transform = this.transform;
+                        this.systemTransform = this.transform;
                         this.sunFactory = new PrefabFactory<Sun>(GameManager.Instance.SunPrefab);
                         this.orbitFactory = new PrefabFactory<Orbit>(GameManager.Instance.OrbitPrefab);
-                        this.planetFactory = new PrefabFactory<Planet>(GameManager.Instance.PlanetPrefab);
+                        this.mapGridFactory = new PrefabFactory<MapGrid>(GameManager.Instance.MapGridPrefab);
 
-                        this.mapOrbits = new List<Orbit>();
+                        this.orbits = new List<Orbit>();
 
                         this.IsSelected = false;
                 }
@@ -34,26 +32,27 @@ namespace Space4x.Models
                 /// <summary>
                 /// Initialises the system map.
                 /// </summary>
-                /// <param name="systemSettings">The systemsettings.</param>
-                public void Initialise(SystemSettings systemSettings)
+                public void Initialise()
                 {
-                        this.sun = this.sunFactory.Create();
-                        this.sun.transform.parent = this.Transform;
+                        this.IsSelected = true;
 
-                        for (int index = 1; index < systemSettings.SystemSize + 1; index++)
+                        this.mapGrid = this.mapGridFactory.Create();
+                        this.mapGrid.transform.parent = this.systemTransform;
+                        this.sun = this.sunFactory.Create();
+                        this.sun.transform.parent = this.systemTransform;
+
+                        for (int index = 1; index < GameManager.Instance.SystemSettings.SystemSize + 1; index++)
                         {
                                 // Configure the orbit object
                                 Orbit orbit = this.orbitFactory.Create();
-                                SystemBody body = systemSettings.PlanetSpawnRate > Random.Range(0.0f, 0.99f)
-                                        ? this.planetFactory.Create()
-                                        : null;
 
-                                orbit.Initialise(index, systemSettings.OrbitalSeperationDistance, systemSettings.OrbitPointsCount * index, body);
-                                orbit.transform.parent = this.Transform;
-                                this.mapOrbits.Add(orbit);
+                                orbit.Initialise(index);
+                                orbit.transform.parent = this.systemTransform;
+                                this.orbits.Add(orbit);
                         }
 
-                        this.systemSettings = systemSettings;
+                        List<MapLine> mapLines = this.orbits[GameManager.Instance.SystemSettings.SystemSize - 1].GetMapLines();
+                        this.mapGrid.SetLines(mapLines);
                 }
         }
 }

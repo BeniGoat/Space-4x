@@ -1,5 +1,8 @@
-﻿using System.Collections;
+﻿using Space4x.GameManagement.Managers;
+using Space4x.Models.Factories;
+using System.Collections;
 using System.Collections.Generic;
+using Unity.Space4x.Assets.Scripts.MathFunction;
 using UnityEngine;
 
 namespace Space4x.Models
@@ -7,18 +10,30 @@ namespace Space4x.Models
         [RequireComponent(typeof(LineRenderer))]
         public class Orbit : MonoBehaviour
         {
+                private IFactory<MapLine> mapLineFactory;
+                private IFactory<Planet> planetFactory;
+                private Transform orbitTransform;
                 private LineRenderer line;
                 private List<GameObject> spots;
                 private float orbitalDistance;
 
-                private Coordinate[] coordinates;
                 private SystemBody body;
                 private int orbitPositionIndex;
 
+                private Coordinate[] coordinates;
+
                 private void Awake()
                 {
-                        this.ConfigureOrbitLine();
+                        this.orbitTransform = this.transform;
                         this.spots = new List<GameObject>();
+                        this.planetFactory = new PrefabFactory<Planet>(GameManager.Instance.PlanetPrefab);
+
+                        this.line = this.GetComponent<LineRenderer>();
+                        this.line.useWorldSpace = true;
+                        this.line.startWidth = 0.1f;
+                        this.line.endWidth = 0.1f;
+                        this.line.startColor = Color.white;
+                        this.line.endColor = Color.white;
                 }
 
                 /// <summary>
@@ -33,35 +48,67 @@ namespace Space4x.Models
                 }
 
                 /// <summary>
-                /// Configures the orbit object and body, if one exists on it.
+                /// Configures the orbit object.
                 /// </summary>
                 /// <param name="orbitalIndex">The index of the orbit.</param>
-                /// <param name="orbitalSeperationDistance">The orbital separation distance.</param>
-                /// <param name="orbitCoordinates">The coordinates of the orbit.</param>
-                public void Initialise(int orbitalIndex, float orbitalSeperationDistance, int numCoordinates, SystemBody body)
+                public void Initialise(int orbitalIndex)
                 {
-                        this.DrawOrbitLine(orbitalIndex);
+                        int numCoordinates = GameManager.Instance.SystemSettings.OrbitPointsCount * orbitalIndex;
+                        this.orbitalDistance = GameManager.Instance.SystemSettings.OrbitalSeperationDistance * orbitalIndex;
 
                         this.coordinates = this.GetOrbitCoordinates(numCoordinates);
-                        foreach (Coordinate coordinate in this.coordinates)
+                        for (int i = 0; i < this.coordinates.Length; i++)
                         {
+                                var coordinate = this.coordinates[i];
                                 GameObject spot = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                                spot.name = $"Coordinate_{i}";
                                 spot.transform.localScale = new Vector3(spot.transform.localScale.x, 0.1f, spot.transform.localScale.z);
                                 spot.transform.position = coordinate.Position;
-                                spot.transform.parent = this.transform;
+                                spot.transform.parent = this.orbitTransform;
                                 this.spots.Add(spot);
                         }
 
-                        if (body != null)
+                        if (GameManager.Instance.SystemSettings.PlanetSpawnRate > Random.Range(0.0f, 0.99f))
                         {
                                 this.orbitPositionIndex = (int)(Random.Range(0.0f, 0.99f) * numCoordinates);
 
-                                body.Initialise(this.coordinates[this.orbitPositionIndex].Position, 360f / numCoordinates);
-                                body.transform.parent = this.transform;
+                                this.body = this.planetFactory.Create();
+                                this.body.transform.localScale *= this.GetPlanetSize();
+                                this.body.Initialise(this.coordinates[this.orbitPositionIndex].Position, 360f / numCoordinates);
+                                this.body.transform.parent = this.orbitTransform;
                         }
 
-                        this.orbitalDistance = orbitalIndex * orbitalSeperationDistance;
-                        this.body = body;
+                        this.DrawOrbitLine(orbitalIndex);
+                }
+
+                private float GetPlanetSize()
+                {
+                        return NumberGeneration.BellCurve(
+                                GameManager.Instance.SystemSettings.MinPlanetSize,
+                                GameManager.Instance.SystemSettings.MaxPlanetSize,
+                                GameManager.Instance.SystemSettings.MaxPlanetSize * 0.5f);
+                }
+
+                public List<MapLine> GetMapLines()
+                {
+                        if (this.mapLineFactory == null)
+                        {
+                                this.mapLineFactory = new PrefabFactory<MapLine>(GameManager.Instance.MapLinePrefab);
+                        }
+
+                        var mapLines = new List<MapLine>();
+
+                        float lineWidth;
+                        for (int i = 0; i < this.coordinates.Length; i++)
+                        {
+                                lineWidth = i % (GameManager.Instance.SystemSettings.OrbitPointsCount - 1) == 0 ? 0.25f : 0.05f;
+
+                                MapLine mapLine = this.mapLineFactory.Create();
+                                mapLine.Configure(lineWidth, this.coordinates[i].Position);
+                                mapLines.Add(mapLine);
+                        }
+
+                        return mapLines;
                 }
 
                 /// <summary>
@@ -104,16 +151,6 @@ namespace Space4x.Models
                                 pos = new Vector3(this.orbitalDistance * Mathf.Cos(theta), 0, this.orbitalDistance * Mathf.Sin(theta));
                                 this.line.SetPosition(i, pos);
                         }
-                }
-
-                private void ConfigureOrbitLine()
-                {
-                        this.line = this.GetComponent<LineRenderer>();
-                        this.line.useWorldSpace = true;
-                        this.line.startWidth = 0.1f;
-                        this.line.endWidth = 0.1f;
-                        this.line.startColor = Color.white;
-                        this.line.endColor = Color.white;
                 }
         }
 }

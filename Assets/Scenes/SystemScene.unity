@@ -229,12 +229,12 @@ Light:
   m_Shape: 0
   m_Color: {r: 1, g: 0.9573427, b: 0.740566, a: 1}
   m_Intensity: 1
-  m_Range: 1000
+  m_Range: 5000
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 1
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -364,10 +364,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1925f1ec9883df47bad1a1543dd0b33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  systemSize: 2
+  systemSize: 5
   orbitDistance: 25
   orbitPointsCount: 6
   planetSpawnRate: 1
+  maxPlanetSize: 8
+  minPlanetSize: 1
   rotationSpeed: 180
   moveSpeedMinZoom: 400
   moveSpeedMaxZoom: 100
@@ -382,6 +384,8 @@ MonoBehaviour:
   OrbitPrefab: {fileID: 4731804017392368210, guid: dc3f0a741693cce43806793d18179ee6, type: 3}
   SunPrefab: {fileID: 7723213014311576091, guid: 80d3c0b1c5d16c74a86f3f55aa4b53da, type: 3}
   PlanetPrefab: {fileID: 4966741824198629673, guid: a010363f9d1e93d488d96ac9c1194a79, type: 3}
+  MapGridPrefab: {fileID: 5458028983945100135, guid: cb9dd992050891645a044ad1be534b80, type: 3}
+  MapLinePrefab: {fileID: 6161554971051888015, guid: 046102e4523b9714d91d8a147702f448, type: 3}
 --- !u!4 &952733828
 Transform:
   m_ObjectHideFlags: 0
@@ -425,7 +429,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72e42c29444393048a2d15620c63b151, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedObject: {fileID: 0}
+  topLeftBorder: {fileID: 2800000, guid: f325301bd264a0548a307f92de01a0af, type: 3}
+  bottomLeftBorder: {fileID: 2800000, guid: 3c285b6a7178c4243aa8fd6c6ed69cfe, type: 3}
+  topRightBorder: {fileID: 2800000, guid: 57a91ca6dd2df134da589596c8d34245, type: 3}
+  bottomRightBorder: {fileID: 2800000, guid: 31b44dbfc8004494f9e934b73e18a199, type: 3}
+  hoveredSystemBody: {fileID: 0}
+  selectedSystemBody: {fileID: 0}
 --- !u!4 &1117072931
 Transform:
   m_ObjectHideFlags: 0

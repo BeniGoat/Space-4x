@@ -5,7 +5,6 @@ namespace Space4x
 {
         public class CameraRig : MonoBehaviour
         {
-                [SerializeField] private new Light light;
                 [SerializeField] private Transform swivel;
                 [SerializeField] private Transform stick;
                 private float rotationAngle;
@@ -17,7 +16,6 @@ namespace Space4x
                 {
                         this.swivel = this.transform.GetChild(0);
                         this.stick = this.swivel.GetChild(0);
-                        this.light = this.GetComponentInChildren<Light>();
                 }
 
                 public void Initialise(CameraSettings cameraSettings)
@@ -49,8 +47,6 @@ namespace Space4x
                         }
 
                         this.transform.localRotation = Quaternion.Euler(0f, this.rotationAngle, 0f);
-
-                        this.light.transform.LookAt(Vector3.zero);
                 }
 
                 public void AdjustPosition(float xDelta, float zDelta)
@@ -63,8 +59,6 @@ namespace Space4x
                         Vector3 position = this.transform.localPosition;
                         position += direction * distance;
                         this.transform.localPosition = this.ClampPosition(position);
-
-                        this.light.transform.LookAt(Vector3.zero);
                 }
 
                 private Vector3 ClampPosition(Vector3 position)
