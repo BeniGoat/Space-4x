@@ -11,12 +11,11 @@ namespace Space4x.Models
                 protected float OrbitRadius;
                 protected float AngleOfTravelPerTurn;
                 protected Canvas InfoCanvas;
-
-                private Material material;
-                private Color originalColor;
-                private Color highlightedColor;
-                private bool isHighlighted;
-                private bool isSelected;
+                protected Material material;
+                protected Color originalColor;
+                protected Color highlightedColor;
+                protected bool isHighlighted;
+                protected bool isSelected;
 
                 private void Awake()
                 {
@@ -31,14 +30,12 @@ namespace Space4x.Models
                 {
                         this.InfoCanvas.enabled = this.isSelected || this.isHighlighted;
 
-                        if (this.isHighlighted)
-                        {
-                                this.material.color = this.material.color != this.highlightedColor ? this.highlightedColor : this.material.color;
-                        }
-                        else
-                        {
-                                this.material.color = this.material.color != this.originalColor ? this.originalColor : this.material.color;
-                        }
+                        Color newColor = this.isHighlighted 
+                                ? this.highlightedColor 
+                                : this.originalColor;
+                        this.material.color = this.material.color != newColor 
+                                ? newColor 
+                                : this.material.color;
                 }
 
                 public virtual IEnumerator Move(Vector3 destination)
