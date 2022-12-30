@@ -1,7 +1,7 @@
 ﻿using Space4x.Models.Factories;
 using UnityEngine;
 
-namespace Unity.Space4x.Assets.Scripts.GameObjects.Factories
+namespace Space4x.Models.Factories
 {
         public class MonoBehaviourFactory<T> : IFactory<T> where T : MonoBehaviour
         {
@@ -22,6 +22,12 @@ namespace Unity.Space4x.Assets.Scripts.GameObjects.Factories
                         tempGameObject.name = $"{this.name}_{this.index}";
                         tempGameObject.AddComponent<T>();
                         T objectOfType = tempGameObject.GetComponent<T>();
+                        if (objectOfType == null)
+                        {
+                                objectOfType = tempGameObject.GetComponentInChildren<T>();
+                                objectOfType.name = $"{this.name}_{this.index}";
+                        }
+
                         this.index++;
 
                         return objectOfType;

@@ -17,7 +17,7 @@ namespace Space4x.Models
                 private List<GameObject> spots;
                 private float orbitalDistance;
 
-                private SystemBody body;
+                private Planet body;
                 private int orbitPositionIndex;
 
                 private Coordinate[] coordinates;
@@ -43,7 +43,7 @@ namespace Space4x.Models
                 public IEnumerator TravelOrbit()
                 {
                         int nextIndex = (this.orbitPositionIndex + 1) % this.coordinates.Length;
-                        yield return this.body.Move(this.coordinates[nextIndex].Position);
+                        yield return this.body.MoveAlongOrbit(this.coordinates[nextIndex].Position);
                         this.orbitPositionIndex = nextIndex;
                 }
 
@@ -54,7 +54,7 @@ namespace Space4x.Models
                 public void Initialise(int orbitalIndex)
                 {
                         int numCoordinates = GameManager.Instance.SystemSettings.OrbitPointsCount * orbitalIndex;
-                        this.orbitalDistance = GameManager.Instance.SystemSettings.OrbitalSeperationDistance * orbitalIndex;
+                        this.orbitalDistance = GameManager.Instance.SystemSettings.OrbitalSeparationDistance * orbitalIndex;
 
                         this.coordinates = this.GetOrbitCoordinates(numCoordinates);
                         for (int i = 0; i < this.coordinates.Length; i++)
@@ -74,8 +74,8 @@ namespace Space4x.Models
 
                                 this.body = this.planetFactory.Create();
                                 this.body.transform.localScale *= this.GetPlanetSize();
-                                this.body.Initialise(this.coordinates[this.orbitPositionIndex].Position, 360f / numCoordinates);
-                                this.body.transform.parent = this.orbitTransform;
+                                this.body.InitialiseOrbitalPosition(this.coordinates[this.orbitPositionIndex].Position, 360f / numCoordinates);
+                                this.body.SetParent(this.orbitTransform);
                         }
 
                         this.DrawOrbitLine(orbitalIndex);
@@ -84,9 +84,9 @@ namespace Space4x.Models
                 private float GetPlanetSize()
                 {
                         return NumberGeneration.BellCurve(
-                                GameManager.Instance.SystemSettings.MinPlanetSize,
-                                GameManager.Instance.SystemSettings.MaxPlanetSize,
-                                GameManager.Instance.SystemSettings.MaxPlanetSize * 0.5f);
+                                GameManager.Instance.SystemSettings.MinBodySize,
+                                GameManager.Instance.SystemSettings.MaxBodySize,
+                                GameManager.Instance.SystemSettings.MaxBodySize * 0.5f);
                 }
 
                 public List<MapLine> GetMapLines()

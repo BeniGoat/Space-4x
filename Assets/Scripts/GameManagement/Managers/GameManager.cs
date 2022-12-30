@@ -86,11 +86,11 @@ namespace Space4x.GameManagement.Managers
                         this.systemFactory = new PrefabFactory<SolarSystem>(this.SystemPrefab);
                         this.SystemSettings = new SystemSettings
                         {
-                                OrbitalSeperationDistance = this.orbitDistance,
+                                OrbitalSeparationDistance = this.orbitDistance,
                                 OrbitPointsCount = this.orbitPointsCount,
                                 PlanetSpawnRate = this.planetSpawnRate,
-                                MaxPlanetSize = this.maxPlanetSize,
-                                MinPlanetSize = this.minPlanetSize,
+                                MaxBodySize = this.maxPlanetSize,
+                                MinBodySize = this.minPlanetSize,
                                 SystemSize = this.systemSize
                         };
                         SolarSystem startingSystem = this.systemFactory.Create();
@@ -99,7 +99,7 @@ namespace Space4x.GameManagement.Managers
 
                         var cameraSettings = new CameraSettings
                         {
-                                Limit =  this.SystemSettings.SystemSize * this.SystemSettings.OrbitalSeperationDistance,
+                                Limit =  this.SystemSettings.SystemSize * this.SystemSettings.OrbitalSeparationDistance,
                                 RotationSpeed = this.rotationSpeed,
                                 MoveSpeedMaxZoom = this.moveSpeedMaxZoom,
                                 MoveSpeedMinZoom = this.moveSpeedMinZoom,

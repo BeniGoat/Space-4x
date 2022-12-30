@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Space4x.Models.Components;
+using System;
+using System.Collections;
 using UnityEngine;
 
 namespace Space4x.Models
@@ -6,55 +8,66 @@ namespace Space4x.Models
         [RequireComponent(typeof(LineRenderer))]
         public class Planet : SystemBody
         {
+                private float orbitRadius;
+                private float angleOfTravelPerTurn;
+                private Orbiter orbiter;
+
                 [SerializeField] private Color sunLineColor;
                 private Color sunLineColorStart;
-                private LineRenderer line;
+                private LineRenderer sunLine;
 
-                private void Start()
+                /// <inheritdoc/>
+                protected override void Awake()
                 {
+                        base.Awake();
+                        this.orbiter = this.ParentTransform.GetComponent<Orbiter>();
+                        this.Rotator.SetRotationSpeed(24f);
+
                         this.sunLineColorStart = new Color(this.sunLineColor.r, this.sunLineColor.g, this.sunLineColor.b, this.sunLineColor.a * 0.1f);
 
                         this.ConfigureSunLine();
-                        this.DrawSunLine();
-                        this.OrbitRadius = Vector3.Distance(Vector3.zero, this.Transform.position);
                 }
 
-                public override IEnumerator Move(Vector3 destination)
+                /// <summary>
+                /// Method called before any Update calls are made.
+                /// </summary>
+                private void Start()
                 {
-                        float angle = 0f;
-                        this.Direction = (this.Transform.position - Vector3.zero).normalized;
+                        this.DrawSunLine();
+                }
 
-                        while (angle < this.AngleOfTravelPerTurn)
-                        {
-                                Vector3 orbit = Vector3.forward * this.OrbitRadius;
-                                orbit = Quaternion.LookRotation(this.Direction) * Quaternion.Euler(0, angle, 0) * orbit;
+                /// <summary>
+                /// Initialises the orbital position of the body.
+                /// </summary>
+                /// <param name="position">The initial position.</param>
+                /// <param name="angleOfTravelPerTurn">The angle of travel per turn.</param>
+                public virtual void InitialiseOrbitalPosition(Vector3 position, float angleOfTravelPerTurn)
+                {
+                        this.orbitRadius = Vector3.Distance(Vector3.zero, position);
+                        this.ParentTransform.position = position;
+                        this.angleOfTravelPerTurn = angleOfTravelPerTurn;
+                }
 
-                                this.Transform.position = Vector3.zero + orbit;
-                                this.line.SetPosition(1, this.Transform.position);
-                                angle += this.AngleOfTravelPerTurn * Time.deltaTime;
-
-                                // Yield heres
-                                yield return null;
-                        }
-
-                        this.Transform.position = destination;
+                public override IEnumerator MoveAlongOrbit(Vector3 destination)
+                {
+                        yield return this.orbiter.Move(destination, this.angleOfTravelPerTurn, this.orbitRadius, this.sunLine);
                 }
 
                 private void ConfigureSunLine()
                 {
-                        this.line = this.GetComponent<LineRenderer>();
-                        this.line.useWorldSpace = true;
-                        this.line.startWidth = 0.2f;
-                        this.line.endWidth = 0.2f;
-                        this.line.startColor = this.sunLineColorStart;
-                        this.line.endColor = this.sunLineColor;
-                        this.line.positionCount = 2;
+                        this.sunLine = this.GetComponent<LineRenderer>();
+                        this.sunLine.useWorldSpace = true;
+                        this.sunLine.startWidth = 0.2f;
+                        this.sunLine.endWidth = 0.2f;
+                        this.sunLine.startColor = this.sunLineColorStart;
+                        this.sunLine.endColor = this.sunLineColor;
+                        this.sunLine.positionCount = 2;
                 }
 
                 private void DrawSunLine()
                 {
-                        this.line.SetPosition(0, Vector3.zero);
-                        this.line.SetPosition(1, this.Transform.position);
+                        this.sunLine.SetPosition(0, Vector3.zero);
+                        this.sunLine.SetPosition(1, this.ParentTransform.position);
                 }
         }
 }

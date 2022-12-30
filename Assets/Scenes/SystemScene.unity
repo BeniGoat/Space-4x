@@ -382,8 +382,8 @@ MonoBehaviour:
   selectionManager: {fileID: 1117072930}
   SystemPrefab: {fileID: 4750278330743456992, guid: 1fb6bee87e79c6b41b9b91b57da96423, type: 3}
   OrbitPrefab: {fileID: 4731804017392368210, guid: dc3f0a741693cce43806793d18179ee6, type: 3}
-  SunPrefab: {fileID: 7723213014311576091, guid: 80d3c0b1c5d16c74a86f3f55aa4b53da, type: 3}
-  PlanetPrefab: {fileID: 4966741824198629673, guid: a010363f9d1e93d488d96ac9c1194a79, type: 3}
+  SunPrefab: {fileID: 604444170268633305, guid: ff684c9b57e4d1a47834fab22f4cc2d0, type: 3}
+  PlanetPrefab: {fileID: 687315646453724986, guid: a010363f9d1e93d488d96ac9c1194a79, type: 3}
   MapGridPrefab: {fileID: 5458028983945100135, guid: cb9dd992050891645a044ad1be534b80, type: 3}
   MapLinePrefab: {fileID: 6161554971051888015, guid: 046102e4523b9714d91d8a147702f448, type: 3}
 --- !u!4 &952733828

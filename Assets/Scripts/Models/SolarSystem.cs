@@ -39,7 +39,7 @@ namespace Space4x.Models
                         this.mapGrid = this.mapGridFactory.Create();
                         this.mapGrid.transform.parent = this.systemTransform;
                         this.sun = this.sunFactory.Create();
-                        this.sun.transform.parent = this.systemTransform;
+                        this.sun.SetParent(this.systemTransform);
 
                         for (int index = 1; index < GameManager.Instance.SystemSettings.SystemSize + 1; index++)
                         {

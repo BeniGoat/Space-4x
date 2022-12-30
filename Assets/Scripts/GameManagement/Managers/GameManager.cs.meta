@@ -3,7 +3,16 @@ guid: f1925f1ec9883df47bad1a1543dd0b33
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - CameraController: {instanceID: 0}
+  - InputManager: {instanceID: 0}
+  - selectionManager: {instanceID: 0}
+  - SystemPrefab: {instanceID: 0}
+  - OrbitPrefab: {instanceID: 0}
+  - SunPrefab: {instanceID: 0}
+  - PlanetPrefab: {instanceID: 0}
+  - MapGridPrefab: {instanceID: 0}
+  - MapLinePrefab: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

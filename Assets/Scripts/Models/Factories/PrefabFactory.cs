@@ -21,6 +21,12 @@ namespace Space4x.Models.Factories
                         GameObject tempGameObject = Object.Instantiate(this.prefab);
                         tempGameObject.name = $"{this.name}_{this.index}";
                         T objectOfType = tempGameObject.GetComponent<T>();
+                        if (objectOfType == null)
+                        {
+                                objectOfType = tempGameObject.GetComponentInChildren<T>();
+                                objectOfType.name = $"{this.name}_{this.index}";
+                        }
+
                         this.index++;
 
                         return objectOfType;
